@@ -18,3 +18,28 @@ poetry로 npm 과 같이 모듈 관리
 `poetry init`
 
 `django-admin startproject config .`
+
+---
+
+## OOP
+
+### init
+
+javascript constructor method는 class가 생성될때 호출되는 함수
+
+python에서는 `__init__(self)`함수가 대신한다
+
+self는 class의 instance를 가리킨다. (javascript의 this)
+
+```python
+class Player:
+    def __init__(self, name="jinwook"):
+        self.name = name
+
+    def hello(self):
+        print(f"hello {self.name}~")
+
+user = Player("nico")
+print(user.name)
+user.hello()
+```
