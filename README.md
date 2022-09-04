@@ -74,3 +74,59 @@ user = Player("nico")
 print(user.name)
 user.hello()
 ```
+
+---
+
+## Django basic
+
+`python manage.py runserver`
+
+`python manage.py migrate`
+
+⇒ database를 조작할 수 있는 코드들이 실제로 동작 가능하도록 database shape을 갖춰줌
+
+---
+
+## Django apps
+
+`python manage.py startapp {app_name}`
+
+새로 만든 app을 장고 project에 등록 시켜야 한다.
+
+```python
+config > settings.py
+
+# Application definition
+
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "houses.apps.HousesConfig",
+]
+```
+
+models
+
+```python
+from pydoc import describe
+from django.db import models
+
+# Create your models here.
+class House(models.Model):
+    """Model definition for House"""
+
+    name = models.CharField(max_length=140)
+    price = models.PositiveIntegerField()
+    description = models.TextField()
+    address = models.CharField(max_length=140)
+```
+
+migrate
+
+`python mangae.py makemigrations`
+
+`python mangae.py migrate`
