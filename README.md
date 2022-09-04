@@ -43,3 +43,34 @@ user = Player("nico")
 print(user.name)
 user.hello()
 ```
+
+### inheritance, super
+
+다른 클래스를 상속하려면 constructor(**init**) 함수를 호출 해야한다.
+
+super()를 통해 접근할 수 있다.
+
+```python
+class Human:
+    def __init__(self, name):
+        print("Human initialization")
+        self.name = name
+
+    def hello(self):
+        print(f"hello my name is {self.name}")
+
+class Player(Human):
+    def __init__(self, name="jinwook"):
+        # Human class 에 대한 접근 권한을 준다.
+        super().__init__(name)
+        self.name = name
+
+class Fan(Human):
+    def __init__(self, name):
+        super().__init__(name)
+        self.name = name
+
+user = Player("nico")
+print(user.name)
+user.hello()
+```
