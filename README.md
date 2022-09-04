@@ -1,9 +1,10 @@
 # Airbnb with Django and React
 
-| 프로젝트 기간 | 22.09.03 ~     |
-| ------------- | -------------- |
-| 프로젝트 목적 | Django & React |
-| Github        | ‣              |
+| 프로젝트 기간 | 22.09.03 ~                            |
+| ------------- | ------------------------------------- |
+| 프로젝트 목적 | Django & React                        |
+| Github        | ‣                                     |
+| Docs          | https://docs.djangoproject.com/en/4.1 |
 
 ---
 
@@ -146,4 +147,47 @@ class HouseAdmin(admin.ModelAdmin):
     list_display = ("name", "price", "address", "pets_allowed")
     list_filter = ("price", "pets_allowed")
     search_fields = ("address",)
+```
+
+---
+
+## User model
+
+[공식 문서](https://docs.djangoproject.com/en/4.1/topics/auth/customizing/#substituting-a-custom-user-model)
+
+Django user의 모든 기능을 상속
+
+model.py
+
+```python
+# from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+# Create your models here.
+
+class User(AbstractUser):
+    pass
+```
+
+setting.py에 user를 생성한 custom user로 등록해준다
+
+```python
+CUSTOM_APPS = ["users.apps.UsersConfig"]
+
+# AUTH
+AUTH_USER_MODEL = "users.User"
+```
+
+admin.py
+
+```python
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from users.models import User
+
+# Register your models here.
+
+@admin.register(User)
+class CustomUserAdmin(UserAdmin):
+    pass
 ```
