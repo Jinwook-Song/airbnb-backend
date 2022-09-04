@@ -178,7 +178,8 @@ CUSTOM_APPS = ["users.apps.UsersConfig"]
 AUTH_USER_MODEL = "users.User"
 ```
 
-admin.py
+customize admin.py
+[공식 문서](https://docs.djangoproject.com/en/4.1/ref/contrib/admin/#django.contrib.admin.ModelAdmin.fieldsets)
 
 ```python
 from django.contrib import admin
@@ -189,5 +190,35 @@ from users.models import User
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    pass
+    fieldsets = (
+        (
+            "Profile",
+            {
+                "fields": ("username", "password", "email", "name", "is_host"),
+                "classes": ("wide",),
+            },
+        ),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                ),
+                "classes": ("collapse",),
+            },
+        ),
+        (
+            "Important dates",
+            {
+                "fields": ("last_login", "date_joined"),
+                "classes": ("collapse",),
+            },
+        ),
+    )
+
+    list_display = ("username", "email", "name", "is_host")
 ```
