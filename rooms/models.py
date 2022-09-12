@@ -6,7 +6,7 @@ from users.models import User
 # Create your models here.
 
 
-class Rooms(CommonModel):
+class Room(CommonModel):
     """Room Model Definition"""
 
     class RoomKindChoices(models.TextChoices):
@@ -31,4 +31,4 @@ class Amenity(CommonModel):
     """Amenity Model"""
 
     name = models.CharField(max_length=150)
-    description = models.CharField(max_length=150, null=True)
+    description = models.CharField(max_length=150, null=True, blank=True)
