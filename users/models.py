@@ -5,15 +5,15 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    class Genders(models.TextChoices):
+    class GenderChoices(models.TextChoices):
         MALE = ("male", "Male")  # database value, admin pannel label
         FEMALE = ("female", "Female")
 
-    class Languagues(models.TextChoices):
+    class LanguagueChoices(models.TextChoices):
         KR = ("kr", "Korean")
         EN = ("en", "English")
 
-    class Currencies(models.TextChoices):
+    class CurrencyChoices(models.TextChoices):
         KRW = ("krw", "Korean ₩")
         USD = ("usd", "Dollar $")
 
@@ -37,16 +37,16 @@ class User(AbstractUser):
     )
     gender = models.CharField(
         max_length=10,
-        choices=Genders.choices,
-        default=Genders.MALE,
+        choices=GenderChoices.choices,
+        default=GenderChoices.MALE,
     )
     language = models.CharField(
         max_length=2,
-        choices=Languagues.choices,
-        default=Languagues.KR,
+        choices=LanguagueChoices.choices,
+        default=LanguagueChoices.KR,
     )
     currency = models.CharField(
         max_length=3,
-        choices=Currencies.choices,
-        default=Currencies.KRW,
+        choices=CurrencyChoices.choices,
+        default=CurrencyChoices.KRW,
     )
