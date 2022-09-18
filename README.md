@@ -473,3 +473,45 @@ class Category(CommonModel):
     class Meta:
         verbose_name_plural = "Categories"
 ```
+
+---
+
+### Media
+
+OneToOneField: 특정 모델에 종속되지만 고유한 값을 갖도록 하기 위해
+
+예를들어 결제 정보를 저장할 때, 유저에 대해 하나의 결제 정보만 갖도록
+
+```jsx
+from django.db import models
+from common.models import CommonModel
+
+# Create your models here.
+
+class Photo(CommonModel):
+    """Photo model definition"""
+
+    file = models.ImageField()
+    description = models.CharField(max_length=150)
+    room = models.ForeignKey(
+        "rooms.Room",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )
+    experience = models.ForeignKey(
+        "experiences.Experience",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )
+
+class Video(CommonModel):
+    """Video model definition"""
+
+    file = models.FileField()
+    experience = models.OneToOneField(
+        "experiences.Experience",
+        on_delete=models.CASCADE,
+    )
+```
