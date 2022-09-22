@@ -515,3 +515,58 @@ class Video(CommonModel):
         on_delete=models.CASCADE,
     )
 ```
+
+---
+
+## ORM
+
+[docs](https://docs.djangoproject.com/en/4.1/topics/db/queries/#retrieving-objects)
+
+`python manage.py shell`
+
+모델은 단순히 데이터의 형태만 표현하는 것이 아닌 실제 데이터와의 연결 통로가 된다.
+
+ex) 사용 예시
+
+```python
+from rooms.models import Room
+
+# Room.objects 를 통해 다양한 method를 사용할 수 있다.
+
+Room.objects.all() # get all
+Room.objects.get(name='room_name') # get with name
+room = Room.objects.get(name='room_name')
+room.owner # get user with foreinkey
+room.price = 2000 # update data
+room.save() # save for db
+```
+
+filler , exclude chaining
+
+```python
+>>> Entry.objects.filter(
+...     headline__startswith='What'
+... ).exclude(
+...     pub_date__gte=datetime.date.today()
+... ).filter(
+...     pub_date__gte=datetime.date(2005, 1, 30)
+... )
+```
+
+create
+
+```python
+<Entry: New Lennon Biography>
+>>> Entry.objects.create(
+...     blog=beatles,
+...     headline='New Lennon Biography in Paperback',
+...     pub_date=date(2009, 6, 1),
+... )
+```
+
+delete
+
+```python
+>>> Entry.objects.filter(pub_date__year=2005).delete()
+(5, {'webapp.Entry': 5})
+```
