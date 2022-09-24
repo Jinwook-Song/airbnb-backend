@@ -12,18 +12,26 @@ class Experience(CommonModel):
     city = models.CharField(max_length=50, default="Seoul")
     name = models.CharField(max_length=250)
     description = models.TextField()
-    host = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    host = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="experiences",
+    )
     price = models.PositiveBigIntegerField()
     address = models.CharField(max_length=250)
     start = models.TimeField()
     end = models.TimeField()
-    perks = models.ManyToManyField("experiences.Perk")
+    perks = models.ManyToManyField(
+        "experiences.Perk",
+        related_name="experiences",
+    )
     # Category가 삭제되면 Experience의 Category는 Null
     category = models.ForeignKey(
         "categories.Category",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
+        related_name="experiences",
     )
 
     def __str__(self) -> str:

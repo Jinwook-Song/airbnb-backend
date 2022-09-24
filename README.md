@@ -588,3 +588,28 @@ in model:
 def total_amenities(self):
         return self.amenities.count()
 ```
+
+---
+
+### Reverse Access with reverse accessors
+
+기본적으로 foreignkey를 생성하면 해당 모델은 \_set을 통해 접근이 가능하다
+
+room.user로 foreignkey 관계를 형성하면
+
+user.room_set을 통해 접근 가능하다
+
+room_set은 related_name으로 변경 가능
+
+ex) room.user ↔  user.rooms
+
+→ room은 하나의 user를 가질 수 있다. user는 여러개의 room을 가질 수 있다
+
+```python
+# Room Model
+owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="rooms",
+    )
+```
