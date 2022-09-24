@@ -570,3 +570,21 @@ delete
 >>> Entry.objects.filter(pub_date__year=2005).delete()
 (5, {'webapp.Entry': 5})
 ```
+
+---
+
+### Admin methods
+
+in admin:
+
+```python
+def total_amenities(self, room):
+        return room.amenities.count()
+```
+
+in model:
+
+```python
+def total_amenities(self):
+        return self.amenities.count()
+```
