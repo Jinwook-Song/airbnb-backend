@@ -613,3 +613,46 @@ owner = models.ForeignKey(
         related_name="rooms",
     )
 ```
+
+---
+
+### More Admin
+
+room의 review 평균 계산
+
+```python
+def rating(self):
+        count = self.reviews.count()
+        if count == 0:
+            return "No Reviews"
+        else:
+            total_rating = 0
+            # return dictionary of reviews
+            for review in self.reviews.all().values("rating"):
+                total_rating += review["rating"]
+            return round(total_rating / count, 2)
+```
+
+---
+
+### Search Admin
+
+[docs](https://docs.djangoproject.com/en/4.1/ref/contrib/admin/#django.contrib.admin.ModelAdmin.search_fields)
+
+| Prefix | Lookup     |
+| ------ | ---------- |
+| ^      | startswith |
+| =      | iexact     |
+| @      | search     |
+| None   | icontains  |
+|        |            |
+
+`search_fields = ['foreign_key__related_fieldname']`
+
+```python
+search_fields = (
+        "name",
+        "^price",  # ^: startWith, default: contain
+        "owner__username",
+    )
+```

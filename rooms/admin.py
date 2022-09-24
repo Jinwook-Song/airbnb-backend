@@ -27,6 +27,12 @@ class RoomAdmin(admin.ModelAdmin):
         "amenities",
     )
 
+    search_fields = (
+        "name",
+        "^price",  # ^: startWith, default: contain
+        "owner__username",
+    )
+
     def total_amenities(self, room):
         return room.amenities.count()
 
