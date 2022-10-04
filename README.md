@@ -691,3 +691,63 @@ def reset_prices(room_admin, request, querysets):
         room.save()
     pass
 ```
+
+---
+
+### Custom filters
+
+foreign key를 통해서도 필터를 구현할 수 있다.
+
+foreign key는 한단계만 되는것이 아니라 계속해서 적용할 수 있다.
+
+```python
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ("__str__", "payload")
+
+    list_filter = (
+        "rating",
+        "user__is_host",
+        "room__category__kind",
+    )
+```
+
+기본으로 제공하는 필터 이외의 커스텀 필터도 가능하다
+
+```python
+class WorldFilter(admin.SimpleListFilter):
+    title = "Filter by words"
+
+    # URL Query
+    parameter_name = "word"
+
+    def lookups(self, request, model_admin):
+        return [
+            ("good", "Good"),
+            ("bad", "Bad"),
+        ]
+
+    def queryset(self, request, queryset):
+        word = self.value()
+        if word:
+            return queryset.filter(payload__contains=word)
+        else:
+            queryset
+
+class RatingFilter(admin.SimpleListFilter):
+    title = "Filter by 🌟x3"
+
+    parameter_name = "star"
+
+    def lookups(self, request, model_admin):
+        return [
+            ("3", "🌟x3 👆"),
+        ]
+
+    def queryset(self, request, queryset):
+        stars = self.value()
+        if stars:
+            return queryset.filter(rating__gte=stars)
+        else:
+            queryset
+```
