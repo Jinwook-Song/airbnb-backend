@@ -781,3 +781,30 @@ def say_hello(req):
     print(req)
     return HttpResponse("hello")
 ```
+
+---
+
+### urls with include
+
+config > urls.py
+
+```python
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("rooms", include("rooms.urls")),
+]
+```
+
+rooms > urls.py
+
+```python
+from django.urls import path
+from rooms import views
+
+urlpatterns = [
+    path("/", views.say_hello),  # root
+]
+```
