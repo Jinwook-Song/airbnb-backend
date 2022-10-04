@@ -751,3 +751,33 @@ class RatingFilter(admin.SimpleListFilter):
         else:
             queryset
 ```
+
+---
+
+### URLs & Views
+
+config > urls.py : 유저가 특정 url로 접근했을 때 장고가 해야할 일을 명시
+
+```python
+from django.contrib import admin
+from django.urls import path
+from rooms import views as room_views
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("rooms", room_views.say_hello),
+]
+```
+
+view: 유저가 특정 url에 접근했을때 실행되는 함수
+
+view.py
+
+```python
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def say_hello(req):
+    print(req)
+    return HttpResponse("hello")
+```
