@@ -656,3 +656,38 @@ search_fields = (
         "owner__username",
     )
 ```
+
+---
+
+### Admin action
+
+```python
+from django.contrib import admin
+
+from rooms.models import Amenity, Room
+
+@admin.action(description="Set all prices to zero")
+def reset_prices(room_admin, request, querysets):
+    print(room_admin)
+    print(request)
+    print(querysets)
+    pass
+
+@admin.register(Room)
+class RoomAdmin(admin.ModelAdmin):
+
+    actions = (reset_prices,)
+
+```
+
+- admin action은 3개의 input을 갖는다.
+  model admin, request, queryset
+
+```python
+@admin.action(description="Set all prices to zero")
+def reset_prices(room_admin, request, querysets):
+    for room in querysets.all():
+        room.price = 0
+        room.save()
+    pass
+```

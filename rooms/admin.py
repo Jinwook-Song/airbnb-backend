@@ -2,11 +2,20 @@ from django.contrib import admin
 
 from rooms.models import Amenity, Room
 
-# Register your models here.
+
+@admin.action(description="Set all prices to zero")
+def reset_prices(room_admin, request, querysets):
+    for room in querysets.all():
+        room.price = 0
+        room.save()
+    pass
 
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
+
+    actions = (reset_prices,)
+
     list_display = (
         "name",
         "price",
