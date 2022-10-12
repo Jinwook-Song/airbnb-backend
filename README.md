@@ -836,3 +836,57 @@ def see_all_rooms(req):
 def see_one_room(req, room_id):
     return HttpResponse(f"see {room_id} room")
 ```
+
+### Render templates
+
+app > templates > page_name.html
+
+render는 (request: HttpRequest, template_name: str | Sequence[str], ccontext: Mapping[str, Any]
+
+```python
+from django.shortcuts import render
+from django.http import HttpResponse
+from rooms.models import Room
+
+def see_all_rooms(req):
+    rooms = Room.objects.all()
+    return render(
+        req,
+        "all_rooms.html",
+        {
+            "title": "Comes from Django",
+            "rooms": rooms,
+        },
+    )
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <header>{{title}}</header>
+    <main>
+      <ul>
+        {% for room in rooms %}
+        <li>
+          <a href="/rooms/{{room.pk}}">
+            {{room.name}}
+            <hr />
+            {% for amenity in room.amenities.all %}
+            <span>{{amenity.name}}</span>
+            <p>{{amenity.description}}</p>
+            {% endfor %}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </main>
+  </body>
+</html>
+```
