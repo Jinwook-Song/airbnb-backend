@@ -3,5 +3,6 @@ from rooms import views
 
 
 urlpatterns = [
-    path("", views.say_hello),  # root
+    path("", views.see_all_rooms),  # root
+    path("<int:room_id>", views.see_one_room),  # root
 ]

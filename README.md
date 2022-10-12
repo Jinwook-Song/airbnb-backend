@@ -808,3 +808,31 @@ urlpatterns = [
     path("/", views.say_hello),  # root
 ]
 ```
+
+### Url arguments
+
+config > urls.py
+
+타입을 지정해줄 수 있다. <int> , <str>
+
+```python
+from django.urls import path
+from rooms import views
+
+urlpatterns = [
+    path("", views.see_all_rooms),  # root
+    path("<int:room_id>", views.see_one_room),  # root
+]
+```
+
+rooms > urls.py
+
+```python
+from django.http import HttpResponse
+
+def see_all_rooms(req):
+    return HttpResponse("see all rooms")
+
+def see_one_room(req, room_id):
+    return HttpResponse(f"see {room_id} room")
+```
