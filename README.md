@@ -890,3 +890,54 @@ def see_all_rooms(req):
   </body>
 </html>
 ```
+
+### Not Found (404)
+
+```python
+def see_one_room(req, room_id):
+    try:
+        room = Room.objects.get(pk=room_id)
+        return render(
+            req,
+            "room_detail.html",
+            {
+                "room": room,
+            },
+        )
+    except Room.DoesNotExist:
+        return render(
+            req,
+            "room_detail.html",
+            {
+                "not_found": True,
+            },
+        )
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    {% if not not_found %}
+    <header>
+      <h1>{{room.name}}</h1>
+    </header>
+    <main>
+      <div>
+        <h3>price: {{room.price}}</h3>
+        <h5>{{room.category.name}}</h5>
+        <p>{{room.description}}</p>
+      </div>
+    </main>
+    {% else %}
+    <h2>Room Not Found.</h2>
+    {% endif %}
+  </body>
+</html>
+```

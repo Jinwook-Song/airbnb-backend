@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    {% if not not_found %}
+    <header>
+      <h1>{{room.name}}</h1>
+    </header>
+    <main>
+      <div>
+        <h3>price: {{room.price}}</h3>
+        <h5>{{room.category.name}}</h5>
+        <p>{{room.description}}</p>
+      </div>
+    </main>
+    {% else %}
+    <h2>Room Not Found.</h2>
+    {% endif %}
+  </body>
+</html>

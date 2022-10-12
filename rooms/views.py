@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from rooms.models import Room
 
 
@@ -16,4 +15,20 @@ def see_all_rooms(req):
 
 
 def see_one_room(req, room_id):
-    return HttpResponse(f"see {room_id} room")
+    try:
+        room = Room.objects.get(pk=room_id)
+        return render(
+            req,
+            "room_detail.html",
+            {
+                "room": room,
+            },
+        )
+    except Room.DoesNotExist:
+        return render(
+            req,
+            "room_detail.html",
+            {
+                "not_found": True,
+            },
+        )
