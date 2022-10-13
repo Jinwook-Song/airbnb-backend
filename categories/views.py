@@ -1,3 +1,14 @@
-from django.shortcuts import render
+from django.http import JsonResponse
+from categories.models import Category
 
-# Create your views here.
+
+def categories(req):
+    all_categories = Category.objects.all()
+    return JsonResponse(
+        {
+            "ok": True,
+            # ERROR OCCUR: Object of type QuerySet is not JSON serializable
+            # Need to translate(serialize) QuerySet to JSON
+            "categories": all_categories,
+        },
+    )
