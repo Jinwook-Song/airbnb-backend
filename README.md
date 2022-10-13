@@ -1037,3 +1037,60 @@ ok: true,
 categories: "[{"model": "categories.category", "pk": 1, "fields": {"created_at": "2022-09-15T10:12:23.104Z", "updated_at": "2022-09-15T10:12:23.104Z", "name": "tiny homes", "kind": "rooms"}}, {"model": "categories.category", "pk": 2, "fields": {"created_at": "2022-09-15T10:12:49.437Z", "updated_at": "2022-09-15T10:12:49.437Z", "name": "food and drink", "kind": "experiences"}}]"
 }
 ```
+
+---
+
+### Django Rest Framework
+
+`api_view` decorators를 통해 아래와 같은 response를 받을 수 있다.
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/cdad9c1f-fff3-4779-9d09-f70090a4a818/Untitled.png)
+
+```python
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+@api_view()
+def categories(req):
+    return Response(
+        {
+            "ok": True,
+        },
+    )
+```
+
+app > serializer.py
+
+```python
+from rest_framework import serializers
+
+class CategorySerializer(serializers.Serializer):
+
+    # Customizable
+    # How & What
+    pk = serializers.IntegerField(required=True)
+    name = serializers.CharField(required=True)
+    kind = serializers.CharField()
+```
+
+app > views.py
+
+```python
+from categories.models import Category
+from categories.serializers import CategorySerializer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+@api_view()
+def categories(req):
+    all_categories = Category.objects.all()
+    # CategorySerializer는 하나의 category에 대해서 번역을 하고 있기 때문에
+    # 리스트를 번역하기 위해 many 옵션 필요
+    serializers = CategorySerializer(all_categories, many=True)
+    return Response(
+        {
+            "ok": True,
+            "categories": serializers.data,
+        },
+    )
+```
