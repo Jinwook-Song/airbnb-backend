@@ -1009,3 +1009,31 @@ def categories(req):
         },
     )
 ```
+
+Serialize
+
+[docs](https://docs.djangoproject.com/en/4.1/topics/serialization/#serializing-django-objects)
+
+```python
+from django.http import JsonResponse
+from django.core import serializers
+from categories.models import Category
+
+def categories(req):
+    all_categories = Category.objects.all()
+    return JsonResponse(
+        {
+            "ok": True,
+            "categories": serializers.serialize("json", all_categories),
+        },
+    )
+```
+
+Response example
+
+```json
+{
+ok: true,
+categories: "[{"model": "categories.category", "pk": 1, "fields": {"created_at": "2022-09-15T10:12:23.104Z", "updated_at": "2022-09-15T10:12:23.104Z", "name": "tiny homes", "kind": "rooms"}}, {"model": "categories.category", "pk": 2, "fields": {"created_at": "2022-09-15T10:12:49.437Z", "updated_at": "2022-09-15T10:12:49.437Z", "name": "food and drink", "kind": "experiences"}}]"
+}
+```

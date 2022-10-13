@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.core import serializers
 from categories.models import Category
 
 
@@ -7,8 +8,6 @@ def categories(req):
     return JsonResponse(
         {
             "ok": True,
-            # ERROR OCCUR: Object of type QuerySet is not JSON serializable
-            # Need to translate(serialize) QuerySet to JSON
-            "categories": all_categories,
+            "categories": serializers.serialize("json", all_categories),
         },
     )
