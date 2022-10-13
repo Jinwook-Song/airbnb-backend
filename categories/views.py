@@ -4,15 +4,20 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
-@api_view()
+@api_view(["GET", "POST"])
 def categories(req):
-    all_categories = Category.objects.all()
-    # CategorySerializer는 하나의 category에 대해서 번역을 하고 있기 때문에
-    # 리스트를 번역하기 위해 many 옵션 필요
-    serializers = CategorySerializer(all_categories, many=True)
-    return Response(
-        {
-            "ok": True,
-            "categories": serializers.data,
-        },
-    )
+    if req.method == "GET":
+        all_categories = Category.objects.all()
+        serializers = CategorySerializer(all_categories, many=True)
+        return Response(serializers.data)
+
+    elif req.method == "POST":
+        print(req.data)
+        return Response({"created": True})
+
+
+@api_view()
+def categoriy(req, pk):
+    category = Category.objects.get(pk=pk)
+    serializers = CategorySerializer(category)
+    return Response(serializers.data)

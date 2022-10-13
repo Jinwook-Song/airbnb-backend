@@ -1094,3 +1094,20 @@ def categories(req):
         },
     )
 ```
+
+### POST request
+
+decorator에 method를 지정해주기만 하면 된다
+
+```python
+@api_view(["GET", "POST"])
+def categories(req):
+    if req.method == "GET":
+        all_categories = Category.objects.all()
+        serializers = CategorySerializer(all_categories, many=True)
+        return Response(serializers.data)
+
+    elif req.method == "POST":
+        print(req.data)
+        return Response({"created": True})
+```
