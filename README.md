@@ -1188,7 +1188,7 @@ view.py
 
 ```python
 @api_view(["GET", "PUT"])
-def categoriy(req, pk):
+def category(req, pk):
     try:
         category = Category.objects.get(pk=pk)
     except Category.DoesNotExist:

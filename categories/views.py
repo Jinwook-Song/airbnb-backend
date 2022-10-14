@@ -3,6 +3,7 @@ from categories.serializers import CategorySerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
+from rest_framework.status import HTTP_204_NO_CONTENT
 
 
 @api_view(["GET", "POST"])
@@ -25,8 +26,8 @@ def categories(req):
             return Response(serializers.errors)
 
 
-@api_view(["GET", "PUT"])
-def categoriy(req, pk):
+@api_view(["GET", "PUT", "DELETE"])
+def category(req, pk):
     try:
         category = Category.objects.get(pk=pk)
     except Category.DoesNotExist:
@@ -49,3 +50,6 @@ def categoriy(req, pk):
             return Response(serializers.data)
         else:
             return Response(serializers.errors)
+    elif req.method == "DELETE":
+        category.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
