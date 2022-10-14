@@ -1223,3 +1223,13 @@ def update(self, instance, validated_data):
         instance.save()
         return instance
 ```
+
+### Delete
+
+view.py
+
+```python
+elif req.method == "DELETE":
+        category.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
+```
