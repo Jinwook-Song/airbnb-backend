@@ -1,19 +1,18 @@
 from categories.models import Category
 from categories.serializers import CategorySerializer
-from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework.status import HTTP_204_NO_CONTENT
 
 
-@api_view(["GET", "POST"])
-def categories(req):
-    if req.method == "GET":
+class Categories(APIView):
+    def get(self, req):
         all_categories = Category.objects.all()
         serializers = CategorySerializer(all_categories, many=True)
         return Response(serializers.data)
 
-    elif req.method == "POST":
+    def post(self, req):
         # Serializer know data shape
         serializers = CategorySerializer(data=req.data)
         if serializers.is_valid():
@@ -26,19 +25,20 @@ def categories(req):
             return Response(serializers.errors)
 
 
-@api_view(["GET", "PUT", "DELETE"])
-def category(req, pk):
-    try:
-        category = Category.objects.get(pk=pk)
-    except Category.DoesNotExist:
-        raise NotFound
+class CategoryDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return Category.objects.get(pk=pk)
+        except Category.DoesNotExist:
+            raise NotFound
 
-    if req.method == "GET":
-        serializers = CategorySerializer(category)
+    def get(self, req, pk):
+        serializers = CategorySerializer(self.get_object(pk))
         return Response(serializers.data)
-    elif req.method == "PUT":
+
+    def put(self, req, pk):
         serializers = CategorySerializer(
-            category,
+            self.get_object(pk),
             data=req.data,
             # because only for update
             partial=True,
@@ -50,6 +50,7 @@ def category(req, pk):
             return Response(serializers.data)
         else:
             return Response(serializers.errors)
-    elif req.method == "DELETE":
-        category.delete()
+
+    def delete(self, req, pk):
+        self.get_object(pk).delete()
         return Response(status=HTTP_204_NO_CONTENT)
