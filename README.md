@@ -1148,3 +1148,36 @@ class CategorySerializer(serializers.Serializer):
     name = serializers.CharField(required=True)
     kind = serializers.CharField()
 ```
+
+### Save
+
+view.py
+
+```python
+@api_view(["GET", "POST"])
+def categories(req):
+    if req.method == "GET":
+        all_categories = Category.objects.all()
+        serializers = CategorySerializer(all_categories, many=True)
+        return Response(serializers.data)
+
+    elif req.method == "POST":
+        # Serializer know data shape
+        serializers = CategorySerializer(data=req.data)
+        if serializers.is_valid():
+            # if save called, automatically call create method
+            # create method definition is our job
+            new_category = serializers.save()
+            serializers = CategorySerializer(new_category)
+            return Response(serializers.data)
+        else:
+            return Response(serializers.errors)
+```
+
+serializer.py
+
+```python
+def create(self, validated_data):
+        # python unpacking
+        return Category.objects.create(**validated_data)
+```

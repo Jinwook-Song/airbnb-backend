@@ -15,7 +15,11 @@ def categories(req):
         # Serializer know data shape
         serializers = CategorySerializer(data=req.data)
         if serializers.is_valid():
-            return Response({"created": True})
+            # if save called, automatically call create method
+            # create method definition is our job
+            new_category = serializers.save()
+            serializers = CategorySerializer(new_category)
+            return Response(serializers.data)
         else:
             return Response(serializers.errors)
 
