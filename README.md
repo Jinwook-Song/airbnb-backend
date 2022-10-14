@@ -1181,3 +1181,45 @@ def create(self, validated_data):
         # python unpacking
         return Category.objects.create(**validated_data)
 ```
+
+### Update
+
+view.py
+
+```python
+@api_view(["GET", "PUT"])
+def categoriy(req, pk):
+    try:
+        category = Category.objects.get(pk=pk)
+    except Category.DoesNotExist:
+        raise NotFound
+
+    if req.method == "GET":
+        serializers = CategorySerializer(category)
+        return Response(serializers.data)
+    elif req.method == "PUT":
+        serializers = CategorySerializer(
+            category,
+            data=req.data,
+            # because only for update
+            partial=True,
+        )
+        if serializers.is_valid():
+            # in this case, serializers call update method
+            updated_category = serializers.save()
+            serializers = CategorySerializer(updated_category)
+            return Response(serializers.data)
+        else:
+            return Response(serializers.errors)
+```
+
+serilizer.py
+
+```python
+def update(self, instance, validated_data):
+        # second args return defualt value
+        instance.name = validated_data.get("name", instance.name)
+        instance.kind = validated_data.get("kind", instance.kind)
+        instance.save()
+        return instance
+```
