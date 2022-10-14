@@ -12,8 +12,12 @@ def categories(req):
         return Response(serializers.data)
 
     elif req.method == "POST":
-        print(req.data)
-        return Response({"created": True})
+        # Serializer know data shape
+        serializers = CategorySerializer(data=req.data)
+        if serializers.is_valid():
+            return Response({"created": True})
+        else:
+            return Response(serializers.errors)
 
 
 @api_view()

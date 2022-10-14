@@ -1111,3 +1111,40 @@ def categories(req):
         print(req.data)
         return Response({"created": True})
 ```
+
+### Is_valid
+
+views.py
+
+```python
+@api_view(["GET", "POST"])
+def categories(req):
+    if req.method == "GET":
+        all_categories = Category.objects.all()
+        serializers = CategorySerializer(all_categories, many=True)
+        return Response(serializers.data)
+
+    elif req.method == "POST":
+        # Serializer know data shape
+        serializers = CategorySerializer(data=req.data)
+        if serializers.is_valid():
+            return Response({"created": True})
+        else:
+            return Response(serializers.errors)
+```
+
+serializer.py
+
+read_only for POST request
+
+```python
+from rest_framework import serializers
+
+class CategorySerializer(serializers.Serializer):
+
+    # Customizable
+    # How & What
+    pk = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(required=True)
+    kind = serializers.CharField()
+```
