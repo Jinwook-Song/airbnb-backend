@@ -1,34 +1,30 @@
-from django.shortcuts import render
-from rooms.models import Room
+from rest_framework.views import APIView
+from rooms.models import Amenity
+from rooms.serializer import AmenitySerializer
+from rest_framework.response import Response
 
 
-def see_all_rooms(req):
-    rooms = Room.objects.all()
-    return render(
-        req,
-        "all_rooms.html",
-        {
-            "title": "Comes from Django",
-            "rooms": rooms,
-        },
-    )
+class Amenities(APIView):
+    def get(self, req):
+        all_amenities = Amenity.objects.all()
+        serializer = AmenitySerializer(all_amenities, many=True)
+        return Response(serializer.data)
+
+    def post(self, req):
+        serializer = AmenitySerializer(data=req.data)
+        if serializer.is_valid():
+            new_amenity = serializer.save()
+            return Response(AmenitySerializer(new_amenity).data)
+        else:
+            return Response(serializer.errors)
 
 
-def see_one_room(req, room_id):
-    try:
-        room = Room.objects.get(pk=room_id)
-        return render(
-            req,
-            "room_detail.html",
-            {
-                "room": room,
-            },
-        )
-    except Room.DoesNotExist:
-        return render(
-            req,
-            "room_detail.html",
-            {
-                "not_found": True,
-            },
-        )
+class AmenityDetail(APIView):
+    def get(self, req, pk):
+        pass
+
+    def put(self, req, pk):
+        pass
+
+    def delete(self, req, pk):
+        pass
