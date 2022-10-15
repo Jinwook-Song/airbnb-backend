@@ -1325,3 +1325,51 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = "__all__"
         # exclude
 ```
+
+### ModelViewSet
+
+[docs](https://www.django-rest-framework.org/api-guide/viewsets/#viewset-actions)
+
+urls.py
+
+```python
+from django.urls import path
+from categories import views
+
+# https://www.django-rest-framework.org/api-guide/viewsets/#viewset-actions
+urlpatterns = [
+    path(
+        "",
+        views.CategoryViewSet.as_view(
+            # connect http methods and class methods
+            {
+                "get": "list",
+                "post": "create",
+            }
+        ),
+    ),
+    path(
+        "<int:pk>",
+        views.CategoryViewSet.as_view(
+            {
+                "get": "retrieve",
+                "put": "partial_update",
+                "delete": "destroy",
+            }
+        ),
+    ),
+]
+```
+
+views.py
+
+```python
+from categories.models import Category
+from categories.serializers import CategorySerializer
+from rest_framework.viewsets import ModelViewSet
+
+class CategoryViewSet(ModelViewSet):
+
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+```
