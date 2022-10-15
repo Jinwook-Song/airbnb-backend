@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rooms.models import Amenity
 from rooms.serializer import AmenitySerializer
 from rest_framework.response import Response
+from rest_framework.exceptions import NotFound
+from rest_framework.status import HTTP_204_NO_CONTENT
 
 
 class Amenities(APIView):
@@ -20,11 +22,27 @@ class Amenities(APIView):
 
 
 class AmenityDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return Amenity.objects.get(pk=pk)
+        except Amenity.DoesNotExist:
+            raise NotFound
+
     def get(self, req, pk):
-        pass
+        amenity = self.get_object(pk=pk)
+        serializer = AmenitySerializer(amenity)
+        return Response(serializer.data)
 
     def put(self, req, pk):
-        pass
+        amenity = self.get_object(pk=pk)
+        serializer = AmenitySerializer(amenity, data=req.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
 
     def delete(self, req, pk):
-        pass
+        amenity = self.get_object(pk=pk)
+        amenity.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
