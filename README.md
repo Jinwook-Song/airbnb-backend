@@ -1385,3 +1385,20 @@ class RoomSerializer(ModelSerializer):
 ```
 
 관계가 연결된 데이터의 정보를 가져온다.
+
+### Populate Serializer
+
+```python
+class RoomSerializer(ModelSerializer):
+
+    # populate: name, username, avatar
+    owner = BriefUserSerializer()
+    # populate: name, description
+    amenities = AmenitySerializer(many=True)
+    # populate: name, kind
+    category = CategorySerializer()
+
+    class Meta:
+        model = Room
+        fields = "__all__"
+```

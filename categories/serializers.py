@@ -5,5 +5,7 @@ from categories.models import Category
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = "__all__"
-        # exclude
+        fields = [
+            "name",
+            "kind",
+        ]
