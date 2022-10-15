@@ -1306,3 +1306,22 @@ class CategoryDetail(APIView):
         self.get_object(pk).delete()
         return Response(status=HTTP_204_NO_CONTENT)
 ```
+
+### ModelSerializer
+
+- A set of default fields are automatically populated.
+- A set of default validators are automatically populated.
+- Default `.create()` and `.update()` implementations are provided.
+
+serializer.py
+
+```python
+from rest_framework import serializers
+from categories.models import Category
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
+        # exclude
+```
