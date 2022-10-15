@@ -1373,3 +1373,15 @@ class CategoryViewSet(ModelViewSet):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
 ```
+
+### Depth
+
+```python
+class RoomSerializer(ModelSerializer):
+    class Meta:
+        model = Room
+        fields = "__all__"
+        depth = 1
+```
+
+관계가 연결된 데이터의 정보를 가져온다.
