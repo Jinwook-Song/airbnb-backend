@@ -1546,3 +1546,18 @@ def post(self, req):
         else:
             raise NotAuthenticated
 ```
+
+### Room Delete
+
+check authenticated & owner of rooom
+
+```python
+def delete(self, req, pk):
+        room = self.get_object(pk)
+        if not req.user.is_authenticated:
+            raise NotAuthenticated
+        if room.owner != req.user:
+            raise PermissionDenied
+        room.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
+```
