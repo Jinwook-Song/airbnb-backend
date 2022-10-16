@@ -1474,3 +1474,39 @@ def post(self, req):
         else:
             raise NotAuthenticated
 ```
+
+### Room Amenities (many to many)
+
+```python
+def post(self, req):
+        if req.user.is_authenticated:
+            serializer = RoomSerializer(data=req.data)
+            if serializer.is_valid():
+                category_pk = req.data.get("category")
+                if not category_pk:
+                    raise ParseError("Category is required.")
+                try:
+                    category = Category.objects.get(pk=category_pk)
+                    if category.kind == Category.CategoryKindChoices.EXPERIENCES:
+                        raise ParseError("The category kind should be rooms.")
+                except Category.DoesNotExist:
+                    raise ParseError("Category not found.")
+                amenities = req.data.get("amenities")
+                room = serializer.save(owner=req.user, category=category)
+                for amenity_pk in amenities:
+                    try:
+                        amenity = Amenity.objects.get(pk=amenity_pk)
+                    except Amenity.DoesNotExist:
+                        room.delete()
+                        raise ParseError(f"Amenity with id {amenity_pk} not found.")
+                    room.amenities.add(amenity)
+                return Response(RoomSerializer(room).data)
+            else:
+                return Response(serializer.errors)
+        else:
+            raise NotAuthenticated
+```
+
+many to many의 경우 데이터를 추가할 때, room.amenities.add(amenity)과 같은 방식으로 추가해준다.
+
+따라서 room이 생성되고 amenity를 추가하는 방식이기 때문에 amenity error가 발생하는 경우 생성된 room을 삭제한다. (optional)
