@@ -1448,3 +1448,29 @@ class Rooms(APIView):
         else:
             raise NotAuthenticated
 ```
+
+### Room Category
+
+category pk를 통해 category를 찾고, 전달해주는 방식
+
+```python
+def post(self, req):
+        if req.user.is_authenticated:
+            serializer = RoomSerializer(data=req.data)
+            if serializer.is_valid():
+                category_pk = req.data.get("category")
+                if not category_pk:
+                    raise ParseError("Category is required.")
+                try:
+                    category = Category.objects.get(pk=category_pk)
+                    if category.kind == Category.CategoryKindChoices.EXPERIENCES:
+                        raise ParseError("The category kind should be rooms.")
+                except Category.DoesNotExist:
+                    raise ParseError("Category not found.")
+                room = serializer.save(owner=req.user, category=category)
+                return Response(RoomSerializer(room).data)
+            else:
+                return Response(serializer.errors)
+        else:
+            raise NotAuthenticated
+```
