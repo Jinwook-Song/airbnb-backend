@@ -1564,3 +1564,48 @@ class RoomListSerializer(ModelSerializer):
     def get_rating(self, room):
         return room.rating()
 ```
+
+### \***\*Serializer Context\*\***
+
+view.py
+
+```python
+class Rooms(APIView):
+    def get(self, req):
+        all_rooms = Room.objects.all()
+        serializer = RoomListSerializer(
+            all_rooms,
+            many=True,
+            context={"req": req},
+        )
+        return Response(serializer.data)
+```
+
+serializers.py
+
+```python
+class RoomListSerializer(ModelSerializer):
+
+    rating = SerializerMethodField()
+    is_owner = SerializerMethodField()
+
+    class Meta:
+        model = Room
+        fields = [
+            "pk",
+            "name",
+            "country",
+            "city",
+            "price",
+            "rating",
+            "is_owner",
+        ]
+
+    # method name is mandatory(get_[field])
+    def get_rating(self, room):
+        return room.rating()
+
+    def get_is_owner(self, room):
+        req = self.context["req"]
+        return req.user == room.owner
+```
