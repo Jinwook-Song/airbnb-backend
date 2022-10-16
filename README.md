@@ -1510,3 +1510,39 @@ def post(self, req):
 many to many의 경우 데이터를 추가할 때, room.amenities.add(amenity)과 같은 방식으로 추가해준다.
 
 따라서 room이 생성되고 amenity를 추가하는 방식이기 때문에 amenity error가 발생하는 경우 생성된 room을 삭제한다. (optional)
+
+### Transaction
+
+django는 즉각적으로 query를 실행시킨다. 따라서 room을 생성하고 삭제하게되는 경우, 불필요한 query가 실행되기도 하고, 생성으로 인한 id가 계속해서 증가하기도 한다.
+
+이를 방지하기 위해 transaction은 query가 한번에 실행되도록 나누고, 에러가 없는 경우 db에 push 한다.
+
+```python
+def post(self, req):
+        if req.user.is_authenticated:
+            serializer = RoomSerializer(data=req.data)
+            if serializer.is_valid():
+                category_pk = req.data.get("category")
+                if not category_pk:
+                    raise ParseError("Category is required.")
+                try:
+                    category = Category.objects.get(pk=category_pk)
+                    if category.kind == Category.CategoryKindChoices.EXPERIENCES:
+                        raise ParseError("The category kind should be rooms.")
+                except Category.DoesNotExist:
+                    raise ParseError("Category not found.")
+                try:
+                    with transaction.atomic():
+                        room = serializer.save(owner=req.user, category=category)
+                        amenities = req.data.get("amenities")
+                        for amenity_pk in amenities:
+                            amenity = Amenity.objects.get(pk=amenity_pk)
+                            room.amenities.add(amenity)
+                        return Response(RoomSerializer(room).data)
+                except Exception:
+                    raise ParseError("Amenity not found.")
+            else:
+                return Response(serializer.errors)
+        else:
+            raise NotAuthenticated
+```
