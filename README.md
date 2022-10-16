@@ -1552,12 +1552,15 @@ def post(self, req):
 check authenticated & owner of rooom
 
 ```python
-def delete(self, req, pk):
-        room = self.get_object(pk)
-        if not req.user.is_authenticated:
-            raise NotAuthenticated
-        if room.owner != req.user:
-            raise PermissionDenied
-        room.delete()
-        return Response(status=HTTP_204_NO_CONTENT)
+class RoomListSerializer(ModelSerializer):
+
+    rating = SerializerMethodField()
+
+    class Meta:
+        model = Room
+        fields = ["pk", "name", "country", "city", "price", "rating"]
+
+    # method name is mandatory(get_[field])
+    def get_rating(self, room):
+        return room.rating()
 ```

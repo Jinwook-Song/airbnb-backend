@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rooms.models import Amenity, Room
 from users.serializers import BriefUserSerializer
 from categories.serializers import CategorySerializer
@@ -14,15 +14,16 @@ class AmenitySerializer(ModelSerializer):
 
 
 class RoomListSerializer(ModelSerializer):
+
+    rating = SerializerMethodField()
+
     class Meta:
         model = Room
-        fields = [
-            "pk",
-            "name",
-            "country",
-            "city",
-            "price",
-        ]
+        fields = ["pk", "name", "country", "city", "price", "rating"]
+
+    # method name is mandatory(get_[field])
+    def get_rating(self, room):
+        return room.rating()
 
 
 class RoomSerializer(ModelSerializer):
@@ -34,6 +35,11 @@ class RoomSerializer(ModelSerializer):
     # populate: name, kind
     category = CategorySerializer(read_only=True)
 
+    rating = SerializerMethodField()
+
     class Meta:
         model = Room
         fields = "__all__"
+
+    def get_rating(self, room):
+        return room.rating()
