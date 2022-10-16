@@ -28,11 +28,11 @@ class RoomListSerializer(ModelSerializer):
 class RoomSerializer(ModelSerializer):
 
     # populate: name, username, avatar
-    owner = BriefUserSerializer()
+    owner = BriefUserSerializer(read_only=True)
     # populate: name, description
-    amenities = AmenitySerializer(many=True)
+    amenities = AmenitySerializer(read_only=True, many=True)
     # populate: name, kind
-    category = CategorySerializer()
+    category = CategorySerializer(read_only=True)
 
     class Meta:
         model = Room

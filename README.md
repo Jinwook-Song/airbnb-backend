@@ -1402,3 +1402,49 @@ class RoomSerializer(ModelSerializer):
         model = Room
         fields = "__all__"
 ```
+
+### Create Room with Authenticated Owner
+
+serializer.py
+
+nest 모델은 read_only를 설정
+
+```python
+class RoomSerializer(ModelSerializer):
+
+    # populate: name, username, avatar
+    owner = BriefUserSerializer(read_only=True)
+    # populate: name, description
+    amenities = AmenitySerializer(read_only=True, many=True)
+    # populate: name, kind
+    category = CategorySerializer(read_only=True)
+
+    class Meta:
+        model = Room
+        fields = "__all__"
+```
+
+view.py
+
+req.user.is_authenticated로 로그인 된 유저를 검증하고
+
+save method에 serializer.save(owner=req.user) owner를 넘겨준다.
+
+```python
+class Rooms(APIView):
+    def get(self, req):
+        all_rooms = Room.objects.all()
+        serializer = RoomListSerializer(all_rooms, many=True)
+        return Response(serializer.data)
+
+    def post(self, req):
+        if req.user.is_authenticated:
+            serializer = RoomSerializer(data=req.data)
+            if serializer.is_valid():
+                room = serializer.save(owner=req.user)
+                return Response(RoomSerializer(room).data)
+            else:
+                return Response(serializer.errors)
+        else:
+            raise NotAuthenticated
+```
