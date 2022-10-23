@@ -1753,3 +1753,35 @@ class RoomPhotos(APIView):
         else:
             return Response(serializer.errors)
 ```
+
+### \***\*permission_classes\*\***
+
+room > view.py
+
+인증에 관한 부분을 한 줄의 코드로 대신할 수 있다.
+
+`permission_classes = [IsAuthenticatedOrReadOnly]`
+
+```python
+class RoomPhotos(APIView):
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self, pk):
+        try:
+            return Room.objects.get(pk=pk)
+        except Room.DoesNotExist:
+            raise NotFound
+
+    def post(self, req, pk):
+        room = self.get_object(pk)
+        if req.user != room.owner:
+            raise PermissionDenied
+
+        serializer = PhotoSerializer(data=req.data)
+        if serializer.is_valid():
+            photo = serializer.save(room=room)
+            return Response(PhotoSerializer(photo).data)
+        else:
+            return Response(serializer.errors)
+```
