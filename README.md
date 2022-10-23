@@ -1681,3 +1681,50 @@ def get(self, req, pk):
         )
         return Response(serializer.data)
 ```
+
+### Global Constant
+
+어디서든 접근 가능
+
+config > settings.py
+
+```python
+# PAGINATION
+TAKE_SIZE = 5
+```
+
+room > views.py
+
+```python
+from django.conf import settings
+
+take = settings.TAKE_SIZE
+```
+
+### Files + Static
+
+[docs](https://docs.djangoproject.com/en/4.1/howto/static-files/#serving-static-files-during-development)
+
+개발 모드에서만 적합한 방식이다.
+
+config > settings.py
+
+```python
+# MEDIA
+
+# 실제 위치
+MEDIA_ROOT = "uploads"
+# 노출되는 위치 (Browser)
+MEDIA_URL = "user-uploads/"
+```
+
+config > urls.py
+
+```python
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("api/v1/rooms/", include("rooms.urls")),
+    path("api/v1/categories/", include("categories.urls")),
+    path("api/v1/experiences/", include("experiences.urls")),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+```

@@ -143,3 +143,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # AUTH
 AUTH_USER_MODEL = "users.User"
+
+
+# MEDIA
+
+# 실제 위치
+MEDIA_ROOT = "uploads"
+# 노출되는 위치 (Browser)
+MEDIA_URL = "user-uploads/"
+
+# PAGINATION
+TAKE_SIZE = 5
