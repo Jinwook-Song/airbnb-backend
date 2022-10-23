@@ -44,7 +44,7 @@ class RoomSerializer(ModelSerializer):
     # populate: name, username, avatar
     owner = BriefUserSerializer(read_only=True)
     # populate: name, description
-    amenities = AmenitySerializer(read_only=True, many=True)
+    # amenities = AmenitySerializer(read_only=True, many=True)
     # populate: name, kind
     category = CategorySerializer(read_only=True)
 
@@ -58,7 +58,7 @@ class RoomSerializer(ModelSerializer):
 
     class Meta:
         model = Room
-        fields = "__all__"
+        exclude = ("amenities",)
 
     def get_rating(self, room):
         return room.rating()
