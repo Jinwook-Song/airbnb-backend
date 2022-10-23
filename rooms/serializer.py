@@ -2,7 +2,6 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rooms.models import Amenity, Room
 from users.serializers import BriefUserSerializer
 from categories.serializers import CategorySerializer
-from reviews.serializers import ReviewSerializer
 
 
 class AmenitySerializer(ModelSerializer):
@@ -55,7 +54,7 @@ class RoomSerializer(ModelSerializer):
     # Reverse Serializers
     # review has fk of room
     # room can access reviews pointing themself with related_name
-    reviews = ReviewSerializer(read_only=True, many=True)
+    # reviews = ReviewSerializer(read_only=True, many=True)
 
     class Meta:
         model = Room

@@ -1655,3 +1655,29 @@ class RoomSerializer(ModelSerializer):
         req = self.context["req"]
         return req.user == room.owner
 ```
+
+### Pagination
+
+[docs](https://docs.djangoproject.com/en/4.1/topics/db/queries/#limiting-querysets)
+
+모든 review를 load한 후 자르는것이 아닌 offset과 limit을 통해 요청
+
+```python
+def get(self, req, pk):
+        try:
+            page = req.query_params.get("page", 1)
+            page = int(page)
+        except ValueError:
+            page = 1
+
+        take = 5
+        start = (page - 1) * take
+        end = page * take
+
+        room = self.get_object(pk)
+        serializer = ReviewSerializer(
+            room.reviews.all()[start:end],
+            many=True,
+        )
+        return Response(serializer.data)
+```

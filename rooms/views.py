@@ -178,9 +178,19 @@ class RoomReviews(APIView):
             raise NotFound
 
     def get(self, req, pk):
+        try:
+            page = req.query_params.get("page", 1)
+            page = int(page)
+        except ValueError:
+            page = 1
+
+        take = 5
+        start = (page - 1) * take
+        end = page * take
+
         room = self.get_object(pk)
         serializer = ReviewSerializer(
-            room.reviews.all(),
+            room.reviews.all()[start:end],
             many=True,
         )
         return Response(serializer.data)
