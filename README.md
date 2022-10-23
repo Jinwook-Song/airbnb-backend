@@ -1728,3 +1728,28 @@ urlpatterns = [
     path("api/v1/experiences/", include("experiences.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 ```
+
+### Upload photo
+
+```python
+class RoomPhotos(APIView):
+    def get_object(self, pk):
+        try:
+            return Room.objects.get(pk=pk)
+        except Room.DoesNotExist:
+            raise NotFound
+
+    def post(self, req, pk):
+        room = self.get_object(pk)
+        if not req.user.is_authenticated:
+            raise NotAuthenticated
+        if req.user != room.owner:
+            raise PermissionDenied
+
+        serializer = PhotoSerializer(data=req.data)
+        if serializer.is_valid():
+            photo = serializer.save(room=room)
+            return Response(PhotoSerializer(photo).data)
+        else:
+            return Response(serializer.errors)
+```
