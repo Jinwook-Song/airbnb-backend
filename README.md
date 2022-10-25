@@ -1754,7 +1754,7 @@ class RoomPhotos(APIView):
             return Response(serializer.errors)
 ```
 
-### \***\*permission_classes\*\***
+### permission_classes
 
 room > view.py
 
@@ -1784,4 +1784,43 @@ class RoomPhotos(APIView):
             return Response(PhotoSerializer(photo).data)
         else:
             return Response(serializer.errors)
+```
+
+### Wishlists (toggle)
+
+wishlists > urls.py
+
+```python
+urlpatterns = [
+    path("", Wishlists.as_view()),
+    path("<int:pk>", WishlistDetail.as_view()),
+    path("<int:pk>/rooms/<int:room_pk>", WishlistToggle.as_view()),
+]
+```
+
+wishlists > views.py
+
+```python
+class WishlistToggle(APIView):
+    def get_wishlist(self, pk, user):
+        try:
+            return Wishlist.objects.get(pk=pk, user=user)
+        except Wishlist.DoesNotExist:
+            raise NotFound
+
+    def get_room(self, pk):
+        try:
+            return Room.objects.get(pk=pk)
+        except Room.DoesNotExist:
+            raise NotFound
+
+    def put(self, req, pk, room_pk):
+        wishilist = self.get_wishlist(pk, req.user)
+        room = self.get_room(room_pk)
+
+        if wishilist.rooms.filter(pk=room.pk).exists():
+            wishilist.rooms.remove(room)
+        else:
+            wishilist.rooms.add(room)
+        return Response(status=HTTP_200_OK)
 ```

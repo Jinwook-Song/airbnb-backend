@@ -4,7 +4,7 @@ from common.models import CommonModel
 # Create your models here.
 
 
-class WishList(CommonModel):
+class Wishlist(CommonModel):
     """Wishlist model definition"""
 
     name = models.CharField(max_length=150)
