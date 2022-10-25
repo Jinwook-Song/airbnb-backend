@@ -1824,3 +1824,17 @@ class WishlistToggle(APIView):
             wishilist.rooms.add(room)
         return Response(status=HTTP_200_OK)
 ```
+
+### is_on_wishlist
+
+room > serializers.py
+
+```python
+class RoomSerializer(ModelSerializer):
+
+    is_on_wishlist = SerializerMethodField()
+
+    def get_is_on_wishlist(self, room):
+        req = self.context["req"]
+        return Wishlist.objects.filter(user=req.user, rooms__pk=room.pk).exists()
+```
