@@ -1,7 +1,7 @@
 from django.db import transaction
 from rest_framework.views import APIView
 from rooms.models import Amenity, Room
-from rooms.serializer import AmenitySerializer, RoomListSerializer, RoomSerializer
+from rooms.serializers import AmenitySerializer, RoomListSerializer, RoomSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import (
     NotFound,
