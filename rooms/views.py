@@ -1,19 +1,18 @@
+from django.conf import settings
 from django.db import transaction
+from django.utils import timezone
 from rest_framework.views import APIView
+from rest_framework.status import HTTP_204_NO_CONTENT
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.exceptions import NotFound, ParseError, PermissionDenied
+from categories.models import Category
 from rooms.models import Amenity, Room
 from rooms.serializers import AmenitySerializer, RoomListSerializer, RoomSerializer
-from rest_framework.response import Response
-from rest_framework.exceptions import (
-    NotFound,
-    ParseError,
-    PermissionDenied,
-)
-from rest_framework.status import HTTP_204_NO_CONTENT
-from categories.models import Category
-from reviews.serializers import ReviewSerializer
-from django.conf import settings
 from medias.serializers import PhotoSerializer
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from reviews.serializers import ReviewSerializer
+from bookings.models import Booking
+from bookings.serializers import PublicBookingSerializer
 
 
 class Amenities(APIView):
@@ -258,3 +257,30 @@ class RoomPhotos(APIView):
             return Response(PhotoSerializer(photo).data)
         else:
             return Response(serializer.errors)
+
+
+class RoomBookings(APIView):
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self, pk):
+        try:
+            return Room.objects.get(pk=pk)
+        except Room.DoesNotExist:
+            raise NotFound
+
+    def get(self, req, pk):
+        room = self.get_object(pk)
+        now = timezone.localtime().date()
+        print(now)
+        # room pk를 통해 bookings을 가져올 수도 있다.
+        # 하지만 이 경우, room이 존재 하지 않는 경우와 booking이 존재하지 않는 경우가
+        # 동일하게 빈 배열을 return 하게된다.
+        # bookings = Booking.objects.filter(room__pk=pk)
+        bookings = Booking.objects.filter(
+            room=room,
+            kind=Booking.BookingKindChoices.ROOM,
+            check_in__gt=now,
+        )
+        serializer = PublicBookingSerializer(bookings, many=True)
+        return Response(serializer.data)

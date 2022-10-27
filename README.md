@@ -1838,3 +1838,37 @@ class RoomSerializer(ModelSerializer):
         req = self.context["req"]
         return Wishlist.objects.filter(user=req.user, rooms__pk=room.pk).exists()
 ```
+
+### Bookings
+
+django util: timezone
+
+```python
+from django.utils import timezone
+
+class RoomBookings(APIView):
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self, pk):
+        try:
+            return Room.objects.get(pk=pk)
+        except Room.DoesNotExist:
+            raise NotFound
+
+    def get(self, req, pk):
+        room = self.get_object(pk)
+        now = timezone.localtime().date()
+        print(now)
+        # room pk를 통해 bookings을 가져올 수도 있다.
+        # 하지만 이 경우, room이 존재 하지 않는 경우와 booking이 존재하지 않는 경우가
+        # 동일하게 빈 배열을 return 하게된다.
+        # bookings = Booking.objects.filter(room__pk=pk)
+        bookings = Booking.objects.filter(
+            room=room,
+            kind=Booking.BookingKindChoices.ROOM,
+            check_in__gt=now,
+        )
+        serializer = PublicBookingSerializer(bookings, many=True)
+        return Response(serializer.data)
+```
