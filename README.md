@@ -8,6 +8,16 @@
 
 ---
 
+### Experiences (TODOS)
+
+- [ ] POST /experiences
+- [ ] GET PUT DELETE /experiences/1
+- [x] GET /experiences/1/perks
+- [x] GET POST /perks
+- [ ] GET PUT DELETE /perks/1
+- [ ] GET POST /experiences/1/bookings
+- [ ] GET PUT DELETE /experiences/1/bookings/2
+
 ## Setup
 
 pyenv로 nvm과 같이 python version을 관리하고 python 가상 환경을 생성
