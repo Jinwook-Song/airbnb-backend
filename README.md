@@ -1981,3 +1981,17 @@ class Users(APIView):
         else:
             return Response(serializer.errors)
 ```
+
+### Routing Caution
+
+string을 인자로 받기 때문에 url 순서가 중요.
+
+username이 `me`일 수 있기 때문에 @로 구분
+
+```python
+urlpatterns = [
+    path("", views.Users.as_view()),
+    path("me", views.Me.as_view()),
+    path("@<str:username>", views.PublicUser.as_view()),
+]
+```

@@ -1,8 +1,9 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import status, exceptions
+from rest_framework import exceptions
 from users.serializers import PrivateUserSerializer
+from users.models import User
 
 
 class Me(APIView):
@@ -46,3 +47,14 @@ class Users(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors)
+
+
+class PublicUser(APIView):
+    def get(self, req, username):
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise exceptions.NotFound
+            # TODO: 공개할 정보만 선별
+        serializer = PrivateUserSerializer(user)
+        return Response(serializer.data)
