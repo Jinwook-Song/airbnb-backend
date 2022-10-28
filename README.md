@@ -2064,3 +2064,49 @@ class LogOut(APIView):
         logout(req)
         return Response({"ok": "log-out succeed"})
 ```
+
+## Strawberry (graphql graphql library for python)
+
+strawberry는 코드를 보고 schema를 생성해준다.
+
+→ type annotation is mandatory
+
+[docs](https://strawberry.rocks/docs)
+
+`poetry *add* 'strawberry-graphql[debug-server]'`
+
+`poetry *add* strawberry-graphql-django`
+
+config > settings.py
+
+```python
+THIRD_PARTY_APPS = [
+    "rest_framework",
+    "strawberry.django",
+]
+```
+
+config > schema.py
+
+```python
+import strawberry
+
+@strawberry.type
+class Query:
+    @strawberry.field
+    def ping(self) -> str:
+        return "pong"
+
+schema = strawberry.Schema(query=Query)
+```
+
+config > urls.py
+
+```python
+from strawberry.django.views import GraphQLView
+from config.schema import schema
+
+urlpatterns = [
+    path("graphql", GraphQLView.as_view(schema=schema)),
+]
+```
