@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import exceptions
+from rest_framework import exceptions, status
 from users.serializers import PrivateUserSerializer
 from users.models import User
 
@@ -58,3 +58,23 @@ class PublicUser(APIView):
             # TODO: 공개할 정보만 선별
         serializer = PrivateUserSerializer(user)
         return Response(serializer.data)
+
+
+class ChangePassword(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def put(self, req):
+        user = req.user
+        old_password = req.data.get("old_password")
+        new_password = req.data.get("new_password")
+
+        if not old_password or not new_password:
+            raise exceptions.ParseError
+
+        if user.check_password(old_password):
+            user.set_password(new_password)
+            user.save()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            raise exceptions.ParseError
