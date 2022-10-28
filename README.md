@@ -2020,3 +2020,37 @@ class ChangePassword(APIView):
         else:
             raise exceptions.ParseError
 ```
+
+### Log-in & Log-out
+
+```python
+from django.contrib.auth import authenticate, login, logout
+
+class LogIn(APIView):
+    def post(self, req):
+        username = req.data.get("username")
+        password = req.data.get("password")
+
+        if not username or not password:
+            raise exceptions.ParseError
+
+        user = authenticate(
+            req,
+            username=username,
+            password=password,
+        )
+
+        if not user:
+            return Response({"error": "wrong passwrod"})
+        else:
+            login(req, user)
+            return Response({"ok": "log-in succeed"})
+
+class LogOut(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, req):
+        logout(req)
+        return Response({"ok": "log-out succeed"})
+```
