@@ -29,7 +29,7 @@ class User(AbstractUser):
         max_length=150,
         default="",
     )
-    avatar = models.ImageField(
+    avatar = models.URLField(
         blank=True,  # blank는 database가 아닌 form level이다.
     )
     is_host = models.BooleanField(
