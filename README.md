@@ -2200,3 +2200,63 @@ class Mutation:
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)
 ```
+
+### Structure
+
+config > schema.py (≈config > urls.py)
+
+```python
+import strawberry
+from rooms import schema as rooms_schema
+
+@strawberry.type
+class Query(rooms_schema.Query):
+    pass
+
+@strawberry.type
+class Mutation:
+    pass
+
+schema = strawberry.Schema(
+    query=Query,
+    # mutation=Mutation,
+)
+```
+
+rooms > urls.py (≈urls.py)
+
+```python
+import strawberry
+import typing
+from rooms import types
+from rooms import queries
+
+@strawberry.type
+class Query:
+    all_rooms: typing.List[types.RoomType] = strawberry.field(
+        resolver=queries.get_all_rooms,
+    )
+```
+
+rooms > type.py (≈serializers.py)
+
+```python
+import strawberry
+from strawberry import auto
+from rooms.models import Room
+
+@strawberry.django.type(Room)
+class RoomType:
+    id: auto
+    name: auto
+    kind: auto
+```
+
+rooms > queries.py (≈views.py)
+
+```python
+from rooms import models
+
+def get_all_rooms():
+    return models.Room.objects.all()
+```
