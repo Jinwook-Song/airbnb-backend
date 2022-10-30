@@ -155,3 +155,13 @@ MEDIA_URL = "user-uploads/"
 
 # PAGINATION
 TAKE_SIZE = 5
+
+
+# Autentication
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        # Defualt
+        "rest_framework.authentication.SessionAuthentication",
+        "config.authentication.CustomAuthentication",
+    ]
+}

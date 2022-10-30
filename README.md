@@ -2385,3 +2385,44 @@ class Query:
         permission_classes=[OnlyLoggedIn],
     )
 ```
+
+## Authentication
+
+config > settings.py
+
+```python
+# Autentication
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        # Defualt
+        "rest_framework.authentication.SessionAuthentication",
+        "config.authentication.CustomAuthentication",
+    ]
+}
+```
+
+config > authentication.py
+
+header를 통한 인증
+
+BaseAuthentication를 상속받아 user | None을 return 해야함
+
+```python
+from rest_framework.authentication import BaseAuthentication
+from rest_framework.exceptions import AuthenticationFailed
+from users.models import User
+
+class CustomAuthentication(BaseAuthentication):
+    def authenticate(self, request):
+        username = request.headers.get("Trust-Me")
+        if not username:
+            return None
+
+        try:
+            user = User.objects.get(username=username)
+            # return shape
+            return (user, None)
+
+        except User.DoesNotExist:
+            raise AuthenticationFailed(f"No user {username}")
+```
