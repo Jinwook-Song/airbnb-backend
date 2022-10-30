@@ -2470,3 +2470,33 @@ urlpatterns = [
     path("token-login", obtain_auth_token),
 ]
 ```
+
+### JWT Autentication (Encode)
+
+`poetry add pyjwt=1.7`
+
+```python
+class JWTLogin(APIView):
+    def post(self, req):
+        username = req.data.get("username")
+        password = req.data.get("password")
+
+        if not username or not password:
+            raise exceptions.ParseError
+
+        user = authenticate(
+            req,
+            username=username,
+            password=password,
+        )
+
+        if user:
+            token = jwt.encode(
+                {"pk": user.pk},
+                settings.SECRET_KEY,
+                algorithm="HS256",
+            )
+            return Response({"token": token})
+        else:
+            return Response({"error": "wrong passwrod"})
+```
