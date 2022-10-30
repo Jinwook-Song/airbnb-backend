@@ -6,6 +6,7 @@ def get_all_rooms():
 
 
 def get_room(pk: int):
+
     try:
         return models.Room.objects.get(pk=pk)
     except models.Room.DoesNotExist:

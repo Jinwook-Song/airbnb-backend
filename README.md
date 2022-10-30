@@ -2352,3 +2352,36 @@ from strawberry import types
             rooms__pk=self.pk,
         ).exists()
 ```
+
+### Permissions
+
+commong > permissions.py
+
+```python
+from strawberry.types import Info
+from strawberry.permission import BasePermission
+from typing import Any
+
+class OnlyLoggedIn(BasePermission):
+
+    message = "Log in first"
+
+    def has_permission(self, source: Any, info: Info):
+        return info.context.request.user.is_authenticated
+```
+
+rooms > schema.py
+
+```python
+import strawberry
+from typing import List
+from rooms import types, queries
+from common.permissions import OnlyLoggedIn
+
+@strawberry.type
+class Query:
+    all_rooms: List[types.RoomType] = strawberry.field(
+        resolver=queries.get_all_rooms,
+        permission_classes=[OnlyLoggedIn],
+    )
+```
