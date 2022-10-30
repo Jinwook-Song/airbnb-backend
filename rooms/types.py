@@ -1,5 +1,5 @@
 from django.conf import settings
-from typing import List
+from typing import List, Optional
 import strawberry
 from strawberry import auto
 from rooms.models import Room
@@ -15,7 +15,7 @@ class RoomType:
     owner: UserType
 
     @strawberry.field
-    def reviews(self, page: int) -> List[ReviewType]:
+    def reviews(self, page: Optional[int] = 1) -> List[ReviewType]:
         # self == room
         take = settings.TAKE_SIZE
         start = (page - 1) * take

@@ -2324,3 +2324,13 @@ class RoomType:
         # self == room
         return self.rating()
 ```
+
+### Optional Params
+
+```python
+from typing import Optional
+
+room: Optional[types.RoomType] = strawberry.field(
+        resolver=queries.get_room,
+    )
+```
