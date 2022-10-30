@@ -1,6 +1,6 @@
 import strawberry
 from typing import List, Optional
-from rooms import types, queries
+from rooms import types, queries, mutations
 from common.permissions import OnlyLoggedIn
 
 
@@ -13,4 +13,12 @@ class Query:
 
     room: Optional[types.RoomType] = strawberry.field(
         resolver=queries.get_room,
+        permission_classes=[OnlyLoggedIn],
+    )
+
+
+@strawberry.type
+class Mutation:
+    room: Optional[types.RoomType] = strawberry.mutation(
+        resolver=mutations.add_room, permission_classes=[OnlyLoggedIn]
     )
