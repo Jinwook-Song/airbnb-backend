@@ -167,5 +167,6 @@ REST_FRAMEWORK = {
         "config.authentication.CustomAuthentication",
         # Token
         "rest_framework.authentication.TokenAuthentication",
+        "config.authentication.JWTAuthentication",
     ]
 }
