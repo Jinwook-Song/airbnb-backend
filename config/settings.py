@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "rest_framework.authtoken",
     "strawberry.django",
 ]
 
@@ -160,8 +161,11 @@ TAKE_SIZE = 5
 # Autentication
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        # Defualt
+        # Defualt (Session)
         "rest_framework.authentication.SessionAuthentication",
+        # Custom
         "config.authentication.CustomAuthentication",
+        # Token
+        "rest_framework.authentication.TokenAuthentication",
     ]
 }

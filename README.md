@@ -2223,7 +2223,7 @@ schema = strawberry.Schema(
 )
 ```
 
-rooms > urls.py (≈urls.py)
+rooms > schema.py (≈urls.py)
 
 ```python
 import strawberry
@@ -2425,4 +2425,48 @@ class CustomAuthentication(BaseAuthentication):
 
         except User.DoesNotExist:
             raise AuthenticationFailed(f"No user {username}")
+```
+
+### Token authentication
+
+[docs](https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication)
+
+model은 자동으로 생성
+
+Headers
+
+key: Authorization
+
+value: Token {token_value]
+
+config > settings.py
+
+```python
+# Application definition
+THIRD_PARTY_APPS = [
+    "rest_framework.authtoken",
+]
+
+# Autentication
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        # Defualt (Session)
+        "rest_framework.authentication.SessionAuthentication",
+        # Custom
+        "config.authentication.CustomAuthentication",
+        # Token
+        "rest_framework.authentication.TokenAuthentication",
+    ]
+}
+```
+
+users > urls.py
+
+```python
+from django.urls import path
+from rest_framework.authtoken.views import obtain_auth_token
+
+urlpatterns = [
+    path("token-login", obtain_auth_token),
+]
 ```
