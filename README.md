@@ -2334,3 +2334,21 @@ room: Optional[types.RoomType] = strawberry.field(
         resolver=queries.get_room,
     )
 ```
+
+### Dynamic fields
+
+```python
+from strawberry import types
+
+# type 명시는 필수적
+    @strawberry.field
+    def is_owner(self, info: types.Info) -> bool:
+        return self.owner == info.context.request.user
+
+    @strawberry.field
+    def is_liked(self, info: types.Info) -> bool:
+        return Wishlist.objects.filter(
+            user=info.context.request.user,
+            rooms__pk=self.pk,
+        ).exists()
+```
