@@ -2260,3 +2260,35 @@ from rooms import models
 def get_all_rooms():
     return models.Room.objects.all()
 ```
+
+### Type Relationship
+
+users > types.py
+
+```python
+import strawberry
+from strawberry import auto
+from users import models
+
+@strawberry.django.type(models.User)
+class UserType:
+    name: auto
+    email: auto
+    username: auto
+```
+
+rooms > types.py
+
+```python
+import strawberry
+from strawberry import auto
+from rooms.models import Room
+from users import types
+
+@strawberry.django.type(Room)
+class RoomType:
+    id: auto
+    name: auto
+    kind: auto
+    owner: "types.UserType"
+```

@@ -1,7 +1,6 @@
 import strawberry
 import typing
-from rooms import types
-from rooms import queries
+from rooms import types, queries
 
 
 @strawberry.type
