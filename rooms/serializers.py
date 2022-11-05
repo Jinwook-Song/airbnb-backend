@@ -75,4 +75,6 @@ class RoomSerializer(ModelSerializer):
 
     def get_is_on_wishlist(self, room):
         req = self.context["req"]
-        return Wishlist.objects.filter(user=req.user, rooms__pk=room.pk).exists()
+        if req.user.is_authenticated:
+            return Wishlist.objects.filter(user=req.user, rooms__pk=room.pk).exists()
+        return False
