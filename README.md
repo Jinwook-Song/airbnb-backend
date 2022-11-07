@@ -2571,7 +2571,7 @@ SECRET_KEY = env("SECRET_KEY")
 
 config > settings.py
 
-```tsx
+```python
 # Application definition
 THIRD_PARTY_APPS = [
     "corsheaders",
@@ -2584,4 +2584,6 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 ```
