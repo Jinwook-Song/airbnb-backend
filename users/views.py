@@ -108,7 +108,7 @@ class LogOut(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def get(self, req):
+    def post(self, req):
         logout(req)
         return Response({"ok": "log-out succeed"})
 
