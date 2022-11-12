@@ -2587,3 +2587,55 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 ```
+
+### Github OAuth
+
+[docs](https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps)
+
+```python
+class GithubOAuth(APIView):
+    def post(self, req):
+        try:
+            code = req.data.get("code")
+            base_url = "https://github.com/login/oauth/access_token"
+            client_id = "20d8b08eabc2559afc43"
+            access_token = requests.post(
+                f"{base_url}?code={code}&client_id={client_id}&client_secret={settings.GH_SECRET}",
+                headers={"Accept": "application/json"},
+            )
+            access_token = access_token.json().get("access_token")
+            user_data = requests.get(
+                "https://api.github.com/user",
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Accept": "application/json",
+                },
+            )
+            user_emails = requests.get(
+                "https://api.github.com/user/emails",
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Accept": "application/json",
+                },
+            )
+            user_data = user_data.json()
+            user_emails = user_emails.json()
+
+            try:
+                user = User.objects.get(email=user_emails[0]["email"])
+                login(req, user)
+                return Response(status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                user = User.objects.create(
+                    username=user_data.get("login"),
+                    email=user_emails[0]["email"],
+                    name=user_data.get("name"),
+                    avatar=user_data.get("avatar_url"),
+                )
+                user.set_unusable_password()
+                user.save()
+                login(req, user)
+                return Response(status=status.HTTP_201_CREATED)
+        except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+```
