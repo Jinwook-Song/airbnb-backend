@@ -2639,3 +2639,52 @@ class GithubOAuth(APIView):
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 ```
+
+### Kakao OAuth
+
+[docs](https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api)
+
+```python
+class KakaoOAuth(APIView):
+    def post(self, req):
+        try:
+            code = req.data.get("code")
+            access_token = requests.post(
+                "https://kauth.kakao.com/oauth/token",
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+                data={
+                    "grant_type": "authorization_code",
+                    "client_id": "c503f1bf93ea8c9971ff490a57332257",
+                    "redirect_uri": "http://127.0.0.1:3000/social/kakao",
+                    "code": code,
+                },
+            )
+            access_token = access_token.json().get("access_token")
+            user_data = requests.get(
+                "https://kapi.kakao.com/v2/user/me",
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+                },
+            )
+            user_data = user_data.json()
+            kakao_account = user_data.get("kakao_account")
+            profile = kakao_account.get("progile")
+            try:
+                user = User.objects.get(email=kakao_account.get("email"))
+                login(req, user)
+                return Response(status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                user = User.objects.create(
+                    email=kakao_account.get("email"),
+                    username=profile.get("nickname"),
+                    name=profile.get("nickname"),
+                    avatar=profile.get("profile_image_url"),
+                )
+                user.set_unusable_password()
+                user.save()
+                login(req, user)
+                return Response(status=status.HTTP_201_CREATED)
+        except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+```
