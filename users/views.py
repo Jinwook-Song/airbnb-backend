@@ -99,10 +99,16 @@ class LogIn(APIView):
         )
 
         if not user:
-            return Response({"error": "wrong passwrod"})
+            return Response(
+                {"error": "wrong passwrod"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         else:
             login(req, user)
-            return Response({"ok": "log-in succeed"})
+            return Response(
+                {"ok": "log-in succeed"},
+                status=status.HTTP_200_OK,
+            )
 
 
 class LogOut(APIView):
