@@ -6,6 +6,8 @@ from users.models import User
 
 
 class CustomAuthentication(BaseAuthentication):
+    # override default
+    # run before views
     def authenticate(self, request):
         username = request.headers.get("Trust-Me")
         if not username:
