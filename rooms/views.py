@@ -89,6 +89,7 @@ class Rooms(APIView):
                     for amenity_pk in amenities:
                         amenity = Amenity.objects.get(pk=amenity_pk)
                         room.amenities.add(amenity)
+
                     return Response(
                         RoomSerializer(
                             room,
