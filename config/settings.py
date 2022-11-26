@@ -218,10 +218,10 @@ if DEBUG:
     ]
 else:
     CORS_ALLOWED_ORIGINS = [
-        "https://airbnb-frontend-9y4t.onrender.com/",
+        "https://airbnb-frontend-9y4t.onrender.com",
     ]
     CSRF_TRUSTED_ORIGINS = [
-        "https://airbnb-frontend-9y4t.onrender.com/",
+        "https://airbnb-frontend-9y4t.onrender.com",
     ]
 
 
