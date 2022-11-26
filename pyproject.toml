@@ -5,12 +5,11 @@ description = ""
 authors = ["jinwook song <wlsdnr129@naver.com>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "airbnb_backend"}]
+packages = [{include = "airbnb"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-Django = "^4.1"
-Pillow = "^9.2.0"
+Django = "~4.0"
 djangorestframework = "^3.14.0"
 strawberry-graphql = {extras = ["debug-server"], version = "^0.137.1"}
 strawberry-graphql-django = "^0.7"
