@@ -5,7 +5,6 @@ description = ""
 authors = ["jinwook song <wlsdnr129@naver.com>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "airbnb"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
