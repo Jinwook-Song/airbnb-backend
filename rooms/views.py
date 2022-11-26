@@ -303,3 +303,27 @@ class RoomBookings(APIView):
             return Response(PublicBookingSerializer(booking).data)
         else:
             return Response(serializer.errors)
+
+
+class RoomBookingCheck(APIView):
+    def get_object(self, pk):
+        try:
+            return Room.objects.get(pk=pk)
+        except Room.DoesNotExist:
+            raise NotFound
+
+    def get(self, req, pk):
+        room = self.get_object(pk)
+        check_in = req.query_params.get("check_in")
+        check_out = req.query_params.get("check_out")
+
+        exists = Booking.objects.filter(
+            room=room,
+            check_in__lte=check_out,
+            check_out__gte=check_in,
+        ).exists()
+
+        if exists:
+            return Response({"ok": False})
+        else:
+            return Response({"ok": True})
