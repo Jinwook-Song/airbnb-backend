@@ -329,5 +329,5 @@ class RoomBookingCheck(APIView):
             return Response({"ok": True})
 
 
-class make_error:
+class make_error():
     division_by_zero = 1 / 0
