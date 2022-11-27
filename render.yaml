@@ -1,7 +1,7 @@
 databases:
-  - name: airbnb-backend
-    databaseName: airbnb-backend
-    user: airbnb-backend
+  - name: airbnb-db
+    databaseName: airbnb-db
+    user: airbnb-db
     region: singapore
 
 services:
