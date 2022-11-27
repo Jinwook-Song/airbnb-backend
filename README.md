@@ -1,10 +1,11 @@
 # Airbnb with Django and React
 
-| 프로젝트 기간 | 22.09.03 ~                            |
+| 프로젝트 기간 | 22.09.03 ~ 22.11.27                   |
 | ------------- | ------------------------------------- |
 | 프로젝트 목적 | Django & React                        |
-| Github        | ‣                                     |
+| Github        | ‣‣                                    |
 | Docs          | https://docs.djangoproject.com/en/4.1 |
+| Homepage      | https://airbnbv1.xyz/                 |
 
 ---
 
@@ -2688,3 +2689,51 @@ class KakaoOAuth(APIView):
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 ```
+
+# Deploy
+
+- Render
+  - [docs](https://render.com/docs/deploy-django#go-production-ready)
+  - debug mode에 따른 백엔드 설정 cors, csrf 등
+  - render.yaml
+    ```yaml
+    databases:
+      - name: airbnb-db
+        databaseName: airbnb-db
+        user: airbnb-db
+        region: singapore
+
+    services:
+      - type: web
+        name: airbnb-backend
+        env: python
+        region: singapore
+        buildCommand: './build.sh'
+        startCommand: 'gunicorn config.wsgi:application'
+        envVars:
+          - key: DATABASE_URL
+            fromDatabase:
+              name: airbnb-db
+              property: connectionString
+          - key: SECRET_KEY
+            generateValue: true
+          - key: WEB_CONCURRENCY
+    	        value: 4
+    ```
+  - build.sh
+    ```bash
+    #!/usr/bin/env bash
+    # exit on error
+    set -o errexit
+
+    pip install --upgrade pip
+    poetry install
+    pip install --force-reinstall -U setuptools
+    python manage.py collectstatic --no-input
+    python manage.py migrate
+    ```
+- Sentry
+  - 에러가 발생했을때 알림 설정 (djaongo뿐 아니라 다양한 서비스에 적용 가능
+- Domain(namecheap)
+  - 백엔드와 프론트의 도메인이 달라 쿠키 설정 등 문제가 발생
+  - 도메인을 구입하여 custom 도메인을 설정
