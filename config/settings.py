@@ -233,6 +233,8 @@ CF_ACCOUNT_ID = env("CF_ACCOUNT_ID")
 CF_TOKEN = env("CF_TOKEN")
 
 if not DEBUG:
+    SESSION_COOKIE_DOMAIN = ".airbnbv1.xyz"
+    CSRF_COOKIE_DOMAIN = ".airbnbv1.xyz"
     sentry_sdk.init(
         dsn="https://b987c148aec64c7fb7329b9048fd923c@o4504225712242688.ingest.sentry.io/4504225715912704",
         integrations=[
