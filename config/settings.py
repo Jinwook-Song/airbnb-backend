@@ -35,6 +35,7 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = "RENDER" not in os.environ
 ALLOWED_HOSTS = [
     "localhost",
+    "backend.airbnbv1.xyz",
 ]
 
 # render가 만든 서버를 django가 사용할 수 있도록 하기 위해
