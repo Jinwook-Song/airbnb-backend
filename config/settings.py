@@ -220,13 +220,13 @@ if DEBUG:
 else:
     CORS_ALLOWED_ORIGINS = [
         # render domain
-        "https://airbnb-frontend-9y4t.onrender.com",
+        # "https://airbnb-frontend-9y4t.onrender.com",
         # namecheap custom domain
         "https://airbnbv1.xyz",
     ]
     CSRF_TRUSTED_ORIGINS = [
         # render domain
-        "https://airbnb-frontend-9y4t.onrender.com",
+        # "https://airbnb-frontend-9y4t.onrender.com",
         # namecheap custom domain
         "https://airbnbv1.xyz",
     ]
